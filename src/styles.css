@@ -2,3 +2,33 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+@keyframes mymove {
+  0% {
+    background: red;
+    flex: 0;
+    opacity: 0;
+  }
+  50% {
+    background: yellow;
+    flex: 1;
+    opacity: 1;
+  }
+
+  100% {
+    background: red;
+    opacity: 0;
+    flex: 0;
+  }
+}
+
+.container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.growbox {
+  background-color: aqua;
+  top: 200px;
+  animation: mymove 3s linear infinite;
+}
