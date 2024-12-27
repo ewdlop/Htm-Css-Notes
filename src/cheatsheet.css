@@ -1,0 +1,432 @@
+/* Flexbox Example */
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+.flex-item {
+  background-color: #f4f4f4;
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+/* Grid Example */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.grid-item {
+  background-color: #e0e0e0;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .flex-container {
+    flex-direction: column;
+  }
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Word Wrap */
+.word-wrap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* Masonry Layout */
+.masonry {
+  column-count: 3;
+  column-gap: 20px;
+}
+.masonry-item {
+  display: inline-block;
+  background: #f9f9f9;
+  margin-bottom: 20px;
+  padding: 10px;
+  break-inside: avoid;
+}
+
+/* Parallax Effect */
+.parallax {
+  background-image: url('your-image.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  height: 500px;
+}
+
+/* Repeated Word Wrap Example */
+.repeat-word-wrap {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* HTML Structure */
+/* Apply these styles to respective HTML elements */
+header {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+nav {
+  background-color: #444;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+main {
+  padding: 20px;
+}
+aside {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+footer {
+  background-color: #222;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Nth-Child Example */
+.nth-child-example div:nth-child(2) {
+  background-color: #ffcccb;
+}
+
+/* Button Hover */
+button:hover {
+  background-color: #555;
+  color: white;
+}
+
+/* Select All Children */
+.parent > * {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+/* Checkbox Checked with Sibling Label */
+input[type="checkbox"]:checked + label {
+  color: green;
+  font-weight: bold;
+}
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* CSS Functions */
+
+/* color manipulation functions */
+.example-color {
+  background-color: rgba(255, 0, 0, 0.5); /* Transparency */
+  border: 1px solid hsl(120, 50%, 50%); /* HSL Color */
+  color: hsla(240, 100%, 50%, 0.7); /* HSLA Color */
+}
+
+/* calc function */
+.example-calc {
+  width: calc(100% - 20px);
+  padding: 10px;
+  font-size: calc(16px + 1vw); /* Responsive font size */
+}
+
+/* clamp function */
+.example-clamp {
+  font-size: clamp(12px, 2vw, 24px);
+}
+
+/* attr function */
+.example-attr::after {
+  content: attr(data-title);
+  color: blue;
+}
+
+/* transform functions */
+.example-transform {
+  transform: rotate(45deg) scale(1.5) translateX(50px);
+}
+
+/* gradient functions */
+.example-gradient {
+  background: linear-gradient(90deg, red, blue);
+  background: radial-gradient(circle, red, yellow, green);
+}
+
+/* repeating gradient functions */
+.example-repeating-gradient {
+  background: repeating-linear-gradient(45deg, red, yellow 10px, blue 20px);
+}
+
+/* url function */
+.example-url {
+  background: url('https://example.com/image.jpg') no-repeat center/cover;
+}
+
+/* var function */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+}
+.example-var {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+/* filter functions */
+.example-filter {
+  filter: brightness(150%) contrast(120%) blur(5px);
+}
+
+/* cubic-bezier function */
+.example-cubic-bezier {
+  animation: bounce 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-50px);
+  }
+}
+
+/* clip-path function */
+.example-clip-path {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* conic-gradient */
+.example-conic-gradient {
+  background: conic-gradient(from 0deg, red, yellow, green, blue, red);
+}
+
+/* repeating-conic-gradient */
+.example-repeating-conic-gradient {
+  background: repeating-conic-gradient(from 0deg, red 10deg, yellow 20deg);
+}
+
+/* counter function */
+ol {
+  counter-reset: section;
+}
+.example-counter li {
+  counter-increment: section;
+  content: counter(section) ". ";
+}
+
+/* path function for SVG */
+.example-path {
+  d: path("M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80");
+}
+
+/* inset function */
+.example-inset {
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* min, max, and clamp functions */
+.example-dimensions {
+  width: min(50vw, 500px);
+  height: max(300px, 30vh);
+}
+
+/* shape-outside function */
+.example-shape {
+  float: left;
+  shape-outside: circle(50% at 50% 50%);
+  width: 100px;
+  height: 100px;
+}
+
+/* Grid layout using CSS functions */
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+/* Flexbox with CSS functions */
+.example-flex {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: clamp(10px, 2vw, 20px);
+}
+
+/* CSS Layout Techniques */
+
+/* 1. Block Layout */
+.block-layout {
+  display: block;
+  margin: 10px;
+  padding: 10px;
+  background-color: #f4f4f4;
+}
+
+/* 2. Inline Layout */
+.inline-layout {
+  display: inline;
+  margin: 10px;
+  padding: 5px;
+  background-color: #e4e4e4;
+}
+
+/* 3. Inline-Block Layout */
+.inline-block-layout {
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+  margin: 5px;
+  padding: 10px;
+  background-color: #d4d4d4;
+}
+
+/* 4. Flexbox Layout */
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #c4c4c4;
+}
+.flex-item {
+  flex: 1 1 calc(25% - 10px);
+  background-color: #b4b4b4;
+  text-align: center;
+  padding: 10px;
+}
+
+/* 5. Grid Layout */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  background-color: #a4a4a4;
+}
+.grid-item {
+  background-color: #949494;
+  text-align: center;
+  padding: 10px;
+}
+
+/* 6. Positioning Layout */
+.positioning-container {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background-color: #848484;
+  margin: 20px auto;
+}
+.positioning-item {
+  position: absolute;
+  background-color: #747474;
+  padding: 10px;
+}
+.positioning-item.top-left {
+  top: 10px;
+  left: 10px;
+}
+.positioning-item.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+/* 7. Multi-Column Layout */
+.multi-column {
+  column-count: 3;
+  column-gap: 20px;
+  padding: 10px;
+  background-color: #646464;
+}
+.multi-column p {
+  margin: 0 0 10px;
+}
+
+/* 8. Float Layout */
+.float-container {
+  width: 100%;
+  background-color: #545454;
+  overflow: hidden;
+}
+.float-item {
+  float: left;
+  width: calc(50% - 20px);
+  margin: 10px;
+  background-color: #444444;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* 9. Table Layout */
+.table-container {
+  display: table;
+  width: 100%;
+  background-color: #343434;
+  border-spacing: 10px;
+}
+.table-row {
+  display: table-row;
+}
+.table-cell {
+  display: table-cell;
+  padding: 10px;
+  background-color: #242424;
+  color: white;
+  text-align: center;
+}
+
+/* 10. Responsive Layout */
+@media (max-width: 768px) {
+  .responsive-item {
+    flex: 1 1 100%;
+  }
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Utilities for Layout Demonstration */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
