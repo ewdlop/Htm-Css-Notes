@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Layout and Effects</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="flex-container">
+    <h1>Flexbox Layout</h1>
+    <nav>
+      <ul class="flex-container">
+        <li><a href="#grid">Grid</a></li>
+        <li><a href="#masonry">Masonry</a></li>
+        <li><a href="#parallax">Parallax</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="grid" class="grid-container">
+      <div class="grid-item">Item 1</div>
+      <div class="grid-item">Item 2</div>
+      <div class="grid-item">Item 3</div>
+      <div class="grid-item">Item 4</div>
+    </section>
+
+    <section id="animation" class="animate-fade-in">
+      <h2>Animations</h2>
+      <p class="word-wrap">This text fades in with a smooth animation. Long text ensures word wrapping within containers.</p>
+    </section>
+
+    <section id="masonry" class="masonry">
+      <div class="masonry-item">Masonry 1</div>
+      <div class="masonry-item">Masonry 2</div>
+      <div class="masonry-item">Masonry 3</div>
+      <div class="masonry-item">Masonry 4</div>
+    </section>
+
+    <section id="parallax" class="parallax">
+      <h2>Parallax Effect</h2>
+    </section>
+  </main>
+
+  <footer>
+    <p>Repeated Word Wrap ensures text wraps properly in any container.</p>
+  </footer>
+</body>
+</html>
