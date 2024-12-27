@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprehensive HTML Elements</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+  <!-- Structural Elements -->
+  <header>
+    <h1>Welcome to My Website</h1>
+    <p>Explore the various HTML elements!</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#section1">Section 1</a></li>
+      <li><a href="#section2">Section 2</a></li>
+      <li><a href="#section3">Section 3</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="section1">
+      <h2>Section 1</h2>
+      <p>This section demonstrates <strong>text formatting</strong>, <em>emphasis</em>, and other inline elements like <code>&lt;code&gt;</code>.</p>
+      <blockquote>"This is a blockquote for quoting text."</blockquote>
+      <pre>
+function example() {
+  console.log("This is preformatted text.");
+}
+      </pre>
+    </section>
+
+    <section id="section2">
+      <h2>Section 2</h2>
+      <article>
+        <h3>Article 1</h3>
+        <p>This is an independent content piece like a blog post.</p>
+      </article>
+      <article>
+        <h3>Article 2</h3>
+        <p>Another article for showcasing independent sections.</p>
+      </article>
+    </section>
+
+    <section id="section3">
+      <h2>Section 3</h2>
+      <form>
+        <fieldset>
+          <legend>Sample Form</legend>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email">
+
+          <label for="message">Message:</label>
+          <textarea id="message" name="message"></textarea>
+
+          <label>
+            <input type="checkbox" id="subscribe" name="subscribe">
+            Subscribe to newsletter
+          </label>
+
+          <button type="submit">Submit</button>
+        </fieldset>
+      </form>
+    </section>
+  </main>
+
+  <aside>
+    <h3>Sidebar</h3>
+    <p>Additional information or related links can go here.</p>
+  </aside>
+
+  <footer>
+    <p>&copy; 2024 My Website. All rights reserved.</p>
+  </footer>
+
+  <!-- Media Elements -->
+  <section>
+    <h2>Media Elements</h2>
+    <figure>
+      <img src="example.jpg" alt="Example image">
+      <figcaption>Example image caption</figcaption>
+    </figure>
+
+    <video controls>
+      <source src="example.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <audio controls>
+      <source src="example.mp3" type="audio/mp3">
+      Your browser does not support the audio tag.
+    </audio>
+  </section>
+
+  <!-- List Example -->
+  <section>
+    <h2>List Example</h2>
+    <ul>
+      <li>Unordered List Item 1</li>
+      <li>Unordered List Item 2</li>
+    </ul>
+    <ol>
+      <li>Ordered List Item 1</li>
+      <li>Ordered List Item 2</li>
+    </ol>
+  </section>
+
+  <!-- Interactive Elements -->
+  <section>
+    <h2>Interactive Elements</h2>
+    <details>
+      <summary>More Info</summary>
+      <p>This is additional information hidden by default.</p>
+    </details>
+    <progress value="70" max="100">70%</progress>
+    <meter value="0.7">70%</meter>
+  </section>
+</body>
+</html>
