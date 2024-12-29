@@ -1,6 +1,7 @@
 import React from "react";
 import { keyframes } from "styled-components";
 
+// This component displays a flexbox layout with different flex properties.
 
 export const Box = () => {
     const container = {
