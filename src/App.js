@@ -4,7 +4,8 @@ import { Link, Outlet } from "react-router-dom";
 const App = () => {
   return (
     <div>
-      <h1>Bookkeeper</h1>
+      <h1>Html-Css-Notes</h1>
+      <p>This application demonstrates various HTML, CSS, and JavaScript techniques.</p>
       <nav
         style={{
           borderBottom: "solid 1px",

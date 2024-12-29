@@ -1,11 +1,24 @@
-~~# Htm-Css-Notes~~
-
 # Html-Css-Notes
 
 Created with CodeSandbox
 
-#
+## Overview
+This repository contains various HTML, CSS, and JavaScript files demonstrating different web development techniques.
+
 ![Test](public/cheatsheet.svg)
+
+## HTML Examples
+- [CSS Layout and Effects](public/beautiful.html)
+- [Comprehensive HTML Elements](public/cheatsheet.html)
+- [Clock Latch](public/clock.html)
+- [Structured HTML Example](public/layout.html)
+- [Logic Gate Simulator (Pure CSS)](public/逻辑门模拟器 (纯CSS实现).html)
+
+## CSS Examples
+- [Benchmarking Flexbox, Grid, and Animations](public/benchmark.css)
+
+## React Components
+- [Box Component](src/components/box.jsx)
 
 ## Html
 
