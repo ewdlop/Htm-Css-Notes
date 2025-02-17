@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock with Latch</title>
+    <style>
+        .clock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #clockCanvas {
+            border: 2px solid #333;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        #latchButton {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        #latchButton.stopped {
+            background: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <canvas id="clockCanvas" width="300" height="300"></canvas>
+        <button id="latchButton">Stop Clock</button>
+    </div>
+
+    <script>
+class Clock {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.radius = canvas.width / 2;
+        this.isRunning = true;
+        this.animationFrameId = null;
+    }
+
+    drawClock() {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw clock face
+        ctx.beginPath();
+        ctx.arc(this.radius, this.radius, this.radius - 10, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Get current time
+        const now = new Date();
+        const hours = now.getHours() % 12;
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+
+        // Draw hour hand
+        this.drawHand(hours * 30 + (minutes * 0.5), 50, 6, '#333');
+        // Draw minute hand
+        this.drawHand(minutes * 6 + (seconds * 0.1), 70, 4, '#666');
+        // Draw second hand
+        this.drawHand(seconds * 6, 80, 2, '#f44336');
+    }
+
+    drawHand(angle, length, width, color) {
+        const ctx = this.ctx;
+        angle = (angle - 90) * Math.PI / 180;
+        const centerX = this.radius;
+        const centerY = this.radius;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(
+            centerX + Math.cos(angle) * length,
+            centerY + Math.sin(angle) * length
+        );
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+    }
+
+    update() {
+        if (this.isRunning) {
+            this.drawClock();
+        }
+        this.animationFrameId = requestAnimationFrame(() => this.update());
+    }
+
+    toggle() {
+        this.isRunning = !this.isRunning;
+        return this.isRunning;
+    }
+}
+
+// Initialize clock
+const canvas = document.getElementById('clockCanvas');
+const clock = new Clock(canvas);
+clock.update();
+
+// Latch button functionality
+const latchButton = document.getElementById('latchButton');
+latchButton.addEventListener('click', () => {
+    const isRunning = clock.toggle();
+    latchButton.textContent = isRunning ? 'Stop Clock' : 'Start Clock';
+    latchButton.classList.toggle('stopped', !isRunning);
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    canvas.width = 300;
+    canvas.height = 300;
+    clock.radius = canvas.width / 2;
+});
+    </script>
+</body>
+</html>
