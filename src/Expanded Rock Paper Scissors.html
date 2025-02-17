@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expanded Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin: 20px 0;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        .win { background-color: #dff0d8; color: #3c763d; }
+        .lose { background-color: #f2dede; color: #a94442; }
+        .tie { background-color: #fcf8e3; color: #8a6d3b; }
+        #score {
+            font-size: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Expanded Rock Paper Scissors</h1>
+    <div id="score">Score: Player: <span id="playerScore">0</span> - Computer: <span id="computerScore">0</span></div>
+    <div class="choices">
+        <button onclick="play('Rock')">Rock 🪨</button>
+        <button onclick="play('Paper')">Paper 📄</button>
+        <button onclick="play('Scissors')">Scissors ✂️</button>
+        <button onclick="play('Lizard')">Lizard 🦎</button>
+        <button onclick="play('Spock')">Spock 🖖</button>
+        <button onclick="play('Batman')">Batman 🦇</button>
+        <button onclick="play('Spider-Man')">Spider-Man 🕷️</button>
+        <button onclick="play('Wizard')">Wizard 🧙</button>
+        <button onclick="play('Glock')">Glock 🔫</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        let playerScore = 0;
+        let computerScore = 0;
+
+        const rules = {
+            Rock: ['Scissors', 'Lizard', 'Spider-Man'],
+            Paper: ['Rock', 'Spock', 'Glock'],
+            Scissors: ['Paper', 'Lizard', 'Spider-Man'],
+            Lizard: ['Paper', 'Spock', 'Wizard'],
+            Spock: ['Rock', 'Scissors', 'Glock'],
+            Batman: ['Spider-Man', 'Wizard', 'Glock'],
+            'Spider-Man': ['Lizard', 'Wizard', 'Paper'],
+            Wizard: ['Glock', 'Rock', 'Batman'],
+            Glock: ['Lizard', 'Spider-Man', 'Rock']
+        };
+
+        function getRandomChoice() {
+            const choices = Object.keys(rules);
+            return choices[Math.floor(Math.random() * choices.length)];
+        }
+
+        function updateScore() {
+            document.getElementById('playerScore').textContent = playerScore;
+            document.getElementById('computerScore').textContent = computerScore;
+        }
+
+        function play(playerChoice) {
+            const computerChoice = getRandomChoice();
+            const resultDiv = document.getElementById('result');
+            
+            let result;
+            if (playerChoice === computerChoice) {
+                result = `Tie! Both chose ${playerChoice}`;
+                resultDiv.className = 'tie';
+            } else if (rules[playerChoice].includes(computerChoice)) {
+                result = `You win! ${playerChoice} beats ${computerChoice}`;
+                resultDiv.className = 'win';
+                playerScore++;
+            } else {
+                result = `You lose! ${computerChoice} beats ${playerChoice}`;
+                resultDiv.className = 'lose';
+                computerScore++;
+            }
+            
+            updateScore();
+            resultDiv.textContent = result;
+        }
+    </script>
+</body>
+</html>
