@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scrollable Hexagonal Grid</title>
+    <style>
+        canvas { width: 100vw; height: 100vh; display: block; }
+        body { margin: 0; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <canvas id="glCanvas"></canvas>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 aVertexPosition;
+        void main() {
+            gl_Position = aVertexPosition;
+        }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision highp float;
+        
+        uniform vec2 iResolution;
+        uniform float iTime;
+        uniform vec2 iPan;
+        uniform float iZoom;
+
+        const float SQRT3 = 1.7320508075688772;
+        const vec2 hexScale = vec2(1.0, SQRT3);
+
+        float hexagonShape(vec2 p, float size) {
+            p = abs(p);
+            float hex = max(dot(p, normalize(vec2(1.0, SQRT3))), p.x);
+            return step(hex, size);
+        }
+
+        vec4 hexGrid(vec2 uv) {
+            vec2 gridPos = uv * hexScale;
+            vec2 gridIndex = vec2(0.0);
+            
+            float row = floor(gridPos.y / SQRT3);
+            gridIndex.y = row;
+            
+            float offset = mod(row, 2.0) * 0.5;
+            float col = floor(gridPos.x - offset);
+            gridIndex.x = col;
+            
+            vec2 center = vec2(col + offset, row * SQRT3);
+            vec2 diff = (gridPos - center) / hexScale;
+            
+            return vec4(diff, gridIndex);
+        }
+
+        void main() {
+            vec2 uv = (gl_FragCoord.xy - 0.5 * iResolution.xy) / min(iResolution.x, iResolution.y);
+            uv = uv * iZoom + iPan;
+            
+            vec4 hex = hexGrid(uv);
+            vec2 hexOffset = hex.xy;
+            vec2 hexId = hex.zw;
+            
+            vec3 col = vec3(0.0);
+            float gridLine = 1.0 - hexagonShape(hexOffset, 0.48);
+            vec3 hexColor = 0.5 + 0.5 * cos(iTime * 0.3 + hexId.xyx * 0.3 + vec3(0.0, 2.0, 4.0));
+            float pulseSize = 0.48 + 0.02 * sin(iTime + length(hexId) * 0.3);
+            float hexBody = hexagonShape(hexOffset, pulseSize);
+            
+            col = mix(vec3(0.1), hexColor, hexBody);
+            col = mix(col, vec3(1.0), gridLine * 0.5);
+            
+            gl_FragColor = vec4(col, 1.0);
+        }
+    </script>
+    <script>
+      (function(){
+class HexGridRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.gl = this.canvas.getContext('webgl');
+
+    if (!this.gl) {
+      throw new Error("WebGL not supported");
+    }
+
+    this.program = null;
+    this.vertexBuffer = null;
+    this.panX = 0;
+    this.panY = 0;
+    this.zoom = 1.0;
+    this.isDragging = false;
+    this.lastMouseX = 0;
+    this.lastMouseY = 0;
+    this.startTime = Date.now();
+    this.animationFrameId = null;
+
+    // Bind event handlers to maintain correct 'this' context
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleWheel = this.handleWheel.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.render = this.render.bind(this);
+
+    this.init();
+  }
+
+  createShader(type, source) {
+    const shader = this.gl.createShader(type);
+    this.gl.shaderSource(shader, source);
+    this.gl.compileShader(shader);
+
+    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+      const error = this.gl.getShaderInfoLog(shader);
+      this.gl.deleteShader(shader);
+      throw new Error(`Shader compilation error: ${error}`);
+    }
+
+    return shader;
+  }
+
+  init() {
+    // Create shaders
+    const vertexShader = this.createShader(
+      this.gl.VERTEX_SHADER,
+      document.getElementById('vertex-shader').text
+    );
+    const fragmentShader = this.createShader(
+      this.gl.FRAGMENT_SHADER,
+      document.getElementById('fragment-shader').text
+    );
+
+    // Create program
+    this.program = this.gl.createProgram();
+    this.gl.attachShader(this.program, vertexShader);
+    this.gl.attachShader(this.program, fragmentShader);
+    this.gl.linkProgram(this.program);
+
+    if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
+      const error = this.gl.getProgramInfoLog(this.program);
+      this.cleanup();
+      throw new Error(`Program linking error: ${error}`);
+    }
+
+    // Clean up shaders
+    this.gl.deleteShader(vertexShader);
+    this.gl.deleteShader(fragmentShader);
+
+    // Create vertex buffer
+    const vertices = new Float32Array([
+      -1.0, -1.0,
+      1.0, -1.0,
+      -1.0, 1.0,
+      1.0, 1.0,
+    ]);
+
+    this.vertexBuffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, vertices, this.gl.STATIC_DRAW);
+
+    // Set up attributes
+    const positionAttrib = this.gl.getAttribLocation(this.program, "aVertexPosition");
+    this.gl.enableVertexAttribArray(positionAttrib);
+    this.gl.vertexAttribPointer(positionAttrib, 2, this.gl.FLOAT, false, 0, 0);
+
+    // Add event listeners
+    this.canvas.addEventListener('mousedown', this.handleMouseDown);
+    this.canvas.addEventListener('mousemove', this.handleMouseMove);
+    this.canvas.addEventListener('mouseup', this.handleMouseUp);
+    this.canvas.addEventListener('wheel', this.handleWheel);
+    window.addEventListener('resize', this.handleResize);
+
+    // Initial resize
+    this.handleResize();
+
+    // Start render loop
+    this.render();
+  }
+
+  handleMouseDown(e) {
+    this.isDragging = true;
+    this.lastMouseX = e.clientX;
+    this.lastMouseY = e.clientY;
+  }
+
+  handleMouseMove(e) {
+    if (this.isDragging) {
+      const dx = (e.clientX - this.lastMouseX) / this.canvas.width;
+      const dy = (e.clientY - this.lastMouseY) / this.canvas.height;
+      this.panX -= dx * this.zoom;
+      this.panY += dy * this.zoom;
+      this.lastMouseX = e.clientX;
+      this.lastMouseY = e.clientY;
+    }
+  }
+
+  handleMouseUp() {
+    this.isDragging = false;
+  }
+
+  handleWheel(e) {
+    e.preventDefault();
+    const zoomSpeed = 0.1;
+    const zoomDelta = e.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
+    this.zoom *= zoomDelta;
+    this.zoom = Math.max(0.1, Math.min(this.zoom, 10.0));
+  }
+
+  handleResize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  render() {
+    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+
+    this.gl.useProgram(this.program);
+
+    // Update uniforms
+    this.gl.uniform1f(
+      this.gl.getUniformLocation(this.program, "iTime"),
+      (Date.now() - this.startTime) / 1000.0
+    );
+    this.gl.uniform2f(
+      this.gl.getUniformLocation(this.program, "iResolution"),
+      this.canvas.width,
+      this.canvas.height
+    );
+    this.gl.uniform2f(
+      this.gl.getUniformLocation(this.program, "iPan"),
+      this.panX,
+      this.panY
+    );
+    this.gl.uniform1f(
+      this.gl.getUniformLocation(this.program, "iZoom"),
+      this.zoom
+    );
+
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+
+    this.animationFrameId = requestAnimationFrame(this.render);
+  }
+
+  cleanup() {
+    // Cancel animation frame
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+
+    // Remove event listeners
+    this.canvas.removeEventListener('mousedown', this.handleMouseDown);
+    this.canvas.removeEventListener('mousemove', this.handleMouseMove);
+    this.canvas.removeEventListener('mouseup', this.handleMouseUp);
+    this.canvas.removeEventListener('wheel', this.handleWheel);
+    window.removeEventListener('resize', this.handleResize);
+
+    // Delete WebGL resources
+    if (this.gl) {
+      // Delete buffer
+      if (this.vertexBuffer) {
+        this.gl.deleteBuffer(this.vertexBuffer);
+      }
+
+      // Delete program and shaders
+      if (this.program) {
+        this.gl.deleteProgram(this.program);
+      }
+
+      // Reset WebGL context
+      this.gl = null;
+    }
+  }
+}
+
+// Initialize when the page loads
+let renderer;
+window.onload = () => {
+  renderer = new HexGridRenderer('glCanvas');
+};
+
+// Cleanup when the page unloads
+window.onunload = () => {
+  if (renderer) {
+    renderer.cleanup();
+  }
+};
+})();
+    </script>
+</body>
+</html>
