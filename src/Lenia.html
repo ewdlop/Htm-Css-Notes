@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lenia Simulation - Power By Anthropic</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      body {
+          margin: 0;
+          padding: 20px;
+          background-color: #1a1a1a;
+          color: #ffffff;
+          font-family: Arial, sans-serif;
+      }
+      
+      .container {
+          max-width: 800px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+      }
+      
+      canvas {
+          background-color: #000000;
+          border: 2px solid #333;
+          border-radius: 4px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      
+      .controls {
+          width: 100%;
+          max-width: 400px;
+          padding: 20px;
+          background-color: #2a2a2a;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+      
+      button {
+          padding: 10px 20px;
+          margin: 0 10px 20px 0;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: background-color 0.3s;
+      }
+      
+      button:hover {
+          background-color: #45a049;
+      }
+      
+      button:active {
+          transform: translateY(1px);
+      }
+      
+      .slider-container {
+          margin-bottom: 15px;
+      }
+      
+      label {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 14px;
+      }
+      
+      input[type="range"] {
+          flex: 1;
+          height: 8px;
+          background: #333;
+          border-radius: 4px;
+          outline: none;
+          -webkit-appearance: none;
+      }
+      
+      input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 16px;
+          height: 16px;
+          background: #4CAF50;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+      
+      input[type="range"]::-webkit-slider-thumb:hover {
+          background: #45a049;
+      }
+      
+      .value {
+          min-width: 40px;
+          text-align: right;
+          font-family: monospace;
+      }
+</style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="leniaCanvas"></canvas>
+        <div class="controls">
+            <button id="toggleBtn">Start</button>
+            <button id="resetBtn">Reset</button>
+            
+            <div class="slider-container">
+                <label>
+                    Growth Center
+                    <input type="range" id="growthCenter" min="0" max="1" step="0.1" value="0.5">
+                    <span class="value">0.5</span>
+                </label>
+            </div>
+            
+            <div class="slider-container">
+                <label>
+                    Growth Width
+                    <input type="range" id="growthWidth" min="0" max="1" step="0.1" value="0.15">
+                    <span class="value">0.15</span>
+                </label>
+            </div>
+            
+            <div class="slider-container">
+                <label>
+                    Time Step
+                    <input type="range" id="timeStep" min="0.1" max="1" step="0.1" value="0.1">
+                    <span class="value">0.1</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function(){
+class Lenia {
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        
+        // Set canvas size
+        this.width = 200;
+        this.height = 200;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+        
+        // Initialize grids
+        this.grid = new Float32Array(this.width * this.height);
+        this.nextGrid = new Float32Array(this.width * this.height);
+        
+        // Initialize kernel
+        this.kernelSize = 21;
+        this.kernel = new Float32Array(this.kernelSize * this.kernelSize);
+        this.initializeKernel();
+        
+        // Parameters
+        this.growthCenter = 0.5;
+        this.growthWidth = 0.15;
+        this.timeStep = 0.1;
+        
+        // Animation state
+        this.isRunning = false;
+        this.animationId = null;
+        
+        // Initialize random pattern
+        this.initializeRandomPattern();
+        this.draw();
+        
+        // Bind event handlers
+        this.bindControls();
+    }
+    
+    initializeKernel() {
+        const radius = 10;
+        const center = radius;
+        
+        for (let y = 0; y < this.kernelSize; y++) {
+            for (let x = 0; x < this.kernelSize; x++) {
+                const dx = x - center;
+                const dy = y - center;
+                const distance = Math.sqrt(dx * dx + dy * dy) / radius;
+                
+                if (distance < 1) {
+                    const value = Math.exp(-distance * distance * 4);
+                    this.kernel[y * this.kernelSize + x] = value;
+                }
+            }
+        }
+    }
+    
+    initializeRandomPattern() {
+        const centerX = this.width / 2;
+        const centerY = this.height / 2;
+        const radius = 20;
+
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < radius) {
+                    this.grid[y * this.width + x] = Math.random();
+                } else {
+                    this.grid[y * this.width + x] = 0;
+                }
+            }
+        }
+    }
+    
+    computeConvolution(x, y) {
+        let sum = 0;
+        const kernelRadius = Math.floor(this.kernelSize / 2);
+
+        for (let ky = 0; ky < this.kernelSize; ky++) {
+            for (let kx = 0; kx < this.kernelSize; kx++) {
+                const worldX = (x + kx - kernelRadius + this.width) % this.width;
+                const worldY = (y + ky - kernelRadius + this.height) % this.height;
+                
+                sum += this.grid[worldY * this.width + worldX] * 
+                       this.kernel[ky * this.kernelSize + kx];
+            }
+        }
+
+        return sum;
+    }
+    
+    growthFunction(x) {
+        const distance = Math.abs(x - this.growthCenter);
+        return Math.exp(-(distance * distance) / (2 * this.growthWidth * this.growthWidth));
+    }
+    
+    update() {
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                const index = y * this.width + x;
+                const neighborhood = this.computeConvolution(x, y);
+                const growth = this.growthFunction(neighborhood);
+                
+                this.nextGrid[index] = this.grid[index] + 
+                                     this.timeStep * (2 * growth - 1);
+                
+                // Clamp values between 0 and 1
+                this.nextGrid[index] = Math.max(0, Math.min(1, this.nextGrid[index]));
+            }
+        }
+
+        // Swap grids
+        [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
+    }
+    
+    draw() {
+        const imageData = this.ctx.createImageData(this.width, this.height);
+        const data = imageData.data;
+
+        for (let i = 0; i < this.grid.length; i++) {
+            const value = Math.floor(this.grid[i] * 255);
+            const index = i * 4;
+            data[index] = value;     // R
+            data[index + 1] = value; // G
+            data[index + 2] = value; // B
+            data[index + 3] = 255;   // A
+        }
+
+        this.ctx.putImageData(imageData, 0, 0);
+    }
+    
+    animate() {
+        this.update();
+        this.draw();
+        
+        if (this.isRunning) {
+            this.animationId = requestAnimationFrame(() => this.animate());
+        }
+    }
+    
+    toggleSimulation() {
+        this.isRunning = !this.isRunning;
+        
+        if (this.isRunning) {
+            document.getElementById('toggleBtn').textContent = 'Pause';
+            this.animate();
+        } else {
+            document.getElementById('toggleBtn').textContent = 'Start';
+            cancelAnimationFrame(this.animationId);
+        }
+    }
+    
+    reset() {
+        this.initializeRandomPattern();
+        this.draw();
+    }
+    
+    bindControls() {
+        // Buttons
+        document.getElementById('toggleBtn').addEventListener('click', () => this.toggleSimulation());
+        document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+        
+        // Sliders
+        const updateValue = (element, value) => {
+            element.nextElementSibling.textContent = value;
+        };
+        
+        document.getElementById('growthCenter').addEventListener('input', (e) => {
+            this.growthCenter = parseFloat(e.target.value);
+            updateValue(e.target, e.target.value);
+        });
+        
+        document.getElementById('growthWidth').addEventListener('input', (e) => {
+            this.growthWidth = parseFloat(e.target.value);
+            updateValue(e.target, e.target.value);
+        });
+        
+        document.getElementById('timeStep').addEventListener('input', (e) => {
+            this.timeStep = parseFloat(e.target.value);
+            updateValue(e.target, e.target.value);
+        });
+    }
+}
+
+// Initialize when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new Lenia('leniaCanvas');
+})})();
+</script>
+</body>
+</html>
