@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Starfield Shader</title>
+    <style>
+        body { margin: 0; }
+        canvas { 
+            width: 100vw; 
+            height: 100vh; 
+            display: block;
+        }
+    </style>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 aVertexPosition;
+        void main() {
+            gl_Position = aVertexPosition;
+        }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision highp float;
+        
+        uniform vec2 iResolution;
+        uniform float iTime;
+        uniform vec2 iMouse;
+
+        float Circle(vec2 p, vec2 c) {
+            float d = length(p-c);
+            float width = 0.005; // Replace fwidth with a constant width
+            return smoothstep(width, 0.0, d-0.02);
+        }
+
+        float Line(vec2 p, vec2 a, vec2 b) {
+            vec2 pa = p-a;
+            vec2 ba = b-a;
+            float t = clamp(dot(pa, ba)/dot(ba,ba), 0.0, 1.0);
+            vec2 c = a + ba*t;
+            float d = length(c-p);
+            float width = 0.002; // Replace fwidth with a constant width
+            return smoothstep(width, 0.0, d-0.001);
+        }
+
+        vec2 Bezier(vec2 a, vec2 b, vec2 c, float t) {
+            return mix(mix(a,c,t), mix(c,b,t), t);
+        }
+
+        vec2 CubicBezier(vec2 P0, vec2 P1, vec2 P2, vec2 P3, float t) {
+            float u = 1.0 - t;
+            vec2 A = mix(P0, P1, t);
+            vec2 B = mix(P1, P2, t);
+            vec2 C = mix(P2, P3, t);
+            vec2 D = mix(A, B, t);
+            vec2 E = mix(B, C, t);
+            return mix(D, E, t);
+        }
+
+        void main() {
+            vec2 uv = (gl_FragCoord.xy - 0.5 * iResolution.xy) / iResolution.y;
+            vec3 col = vec3(0.0);
+            
+            float t = sin(iTime) * 0.5 + 0.5;
+            
+            vec2 A = vec2(-0.8, -0.4);
+            vec2 B = vec2(0.8, 0.4);
+            vec2 C = (iMouse.xy - 0.5 * iResolution.xy) / iResolution.y;
+            vec2 D = C + vec2(0.1, 0.1);
+            
+            vec2 AC = mix(A, C, t);
+            vec2 CB = mix(C, B, t);
+            vec2 CD = mix(C, D, t);
+            vec2 ACB = mix(AC, CB, t);
+            vec2 AD = mix(A, D, t);
+            vec2 DB = mix(D, B, t);
+            vec2 ADB = mix(AD, DB, t);
+            vec2 ACD = mix(AC, CD, t);
+            vec2 CDB = mix(CD, DB, t);
+            vec2 ACDB = mix(ACD, CDB, t);
+
+            // Draw points
+            col += vec3(1.0, 0.0, 0.0) * Circle(uv, A);
+            col += vec3(0.0, 1.0, 0.0) * Circle(uv, B);
+            col += vec3(1.0, 0.0, 1.0) * Circle(uv, C);
+            col += vec3(0.5, 0.5, 0.5) * Circle(uv, D);
+
+            // Draw control points
+            col += vec3(1.0, 1.0, 0.0) * Circle(uv, AC);
+            col += vec3(0.0, 1.0, 1.0) * Circle(uv, CB);
+            col += vec3(0.0, 1.0, 1.0) * Circle(uv, CD);
+            col += vec3(1.0, 1.0, 1.0) * Circle(uv, ACB);
+            
+            // Draw additional control points
+            col += vec3(1.0, 1.0, 0.5) * Circle(uv, AD);
+            col += vec3(0.5, 1.0, 1.0) * Circle(uv, DB);
+            col += vec3(0.5, 1.0, 1.0) * Circle(uv, ADB);
+            col += vec3(1.0, 0.5, 1.0) * Circle(uv, ACD);
+            col += vec3(1.0, 0.5, 1.0) * Circle(uv, CDB);
+            col += vec3(1.0, 0.5, 1.0) * Circle(uv, ACDB);
+
+            // Draw construction lines
+            col += Line(uv, A, C) + Line(uv, C, B);
+            col += Line(uv, AC, CB);
+            col += Line(uv, A, D) + Line(uv, D, B);
+            col += Line(uv, AD, DB);
+            col += Line(uv, A, C) + Line(uv, C, DB);
+            col += Line(uv, AC, CD);
+            col += Line(uv, C, D) + Line(uv, D, B);
+            col += Line(uv, CD, DB);
+
+            // Draw Bezier curves
+            const int NUM_SEGS = 25;
+            vec2 P, PP = A;
+            
+            for(int i = 1; i <= NUM_SEGS; i++) {
+                float t = float(i) / float(NUM_SEGS);
+                P = CubicBezier(A, C, D, B, t);
+                col += max(col, Line(uv, P, PP));
+                PP = P;
+            }
+
+            P = A;
+            PP = A;
+            for(int i = 1; i <= NUM_SEGS; i++) {
+                float t = float(i) / float(NUM_SEGS);
+                P = Bezier(A, B, C, t);
+                col += max(col, Line(uv, P, PP));
+                PP = P;
+            }
+
+            P = A;
+            PP = A;
+            for(int i = 1; i <= NUM_SEGS; i++) {
+                float t = float(i) / float(NUM_SEGS);
+                P = Bezier(A, B, D, t);
+                col += max(col, Line(uv, P, PP));
+                PP = P;
+            }
+
+            gl_FragColor = vec4(col, 1.0);
+        }
+    </script>
+</head>
+<body>
+    <canvas id="glCanvas"></canvas>
+</body>
+</html>
