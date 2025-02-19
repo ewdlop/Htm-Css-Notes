@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<body>
+<svg viewBox="0 0 800 400" width="100%" style="max-width: 800px; background-color: #f8f9fa;">
+    <!-- Title -->
+    <text x="400" y="50" 
+          text-anchor="middle" 
+          fill="black" 
+          font-size="24" 
+          font-weight="bold">Pentaquark Structure</text>
+
+    <!-- Left side: 5 individual quarks -->
+    <g transform="translate(200,200)">
+        <!-- Individual quarks -->
+        <circle cx="0" cy="-80" r="25" fill="#ff4444"/>
+        <circle cx="76" cy="-24" r="25" fill="#4444ff"/>
+        <circle cx="47" cy="63" r="25" fill="#44ff44"/>
+        <circle cx="-47" cy="63" r="25" fill="#ffff44"/>
+        <circle cx="-76" cy="-24" r="25" fill="#ff44ff"/>
+        
+        <!-- Labels -->
+        <text x="0" y="-75" 
+              text-anchor="middle" 
+              fill="white" 
+              font-size="16" 
+              font-weight="bold">q₁</text>
+        <text x="76" y="-19" 
+              text-anchor="middle" 
+              fill="white" 
+              font-size="16" 
+              font-weight="bold">q₂</text>
+        <text x="47" y="68" 
+              text-anchor="middle" 
+              fill="white" 
+              font-size="16" 
+              font-weight="bold">q₃</text>
+        <text x="-47" y="68" 
+              text-anchor="middle" 
+              fill="white" 
+              font-size="16" 
+              font-weight="bold">q₄</text>
+        <text x="-76" y="-19" 
+              text-anchor="middle" 
+              fill="white" 
+              font-size="16" 
+              font-weight="bold">q̄₅</text>
+    </g>
+
+    <!-- Arrow -->
+    <path d="M 350 200 L 450 200" 
+          stroke="black" 
+          stroke-width="2" 
+          marker-end="url(#arrowhead)"/>
+    <defs>
+        <marker id="arrowhead" 
+                markerWidth="10" 
+                markerHeight="7" 
+                refX="9" 
+                refY="3.5" 
+                orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- Right side: Meson + Baryon structure -->
+    <g transform="translate(600,200)">
+        <!-- Baryon (triangle) -->
+        <path d="M0,-40 L60,40 L-60,40 Z" 
+              fill="#eee" 
+              stroke="#666" 
+              stroke-width="2"/>
+        <!-- Three quarks in baryon -->
+        <circle cx="0" cy="-20" r="20" fill="#ff4444"/>
+        <circle cx="35" cy="25" r="20" fill="#4444ff"/>
+        <circle cx="-35" cy="25" r="20" fill="#44ff44"/>
+        
+        <!-- Meson (oval) -->
+        <ellipse cx="0" cy="-90" 
+                 rx="40" ry="25" 
+                 fill="#eee" 
+                 stroke="#666" 
+                 stroke-width="2"/>
+        <!-- Two quarks in meson -->
+        <circle cx="-20" cy="-90" r="15" fill="#ffff44"/>
+        <circle cx="20" cy="-90" r="15" fill="#ff44ff"/>
+    </g>
+
+    <!-- Labels -->
+    <text x="200" y="350" 
+          text-anchor="middle" 
+          fill="black" 
+          font-size="16">5 Quarks</text>
+    
+    <text x="600" y="350" 
+          text-anchor="middle" 
+          fill="black" 
+          font-size="16">Meson + Baryon Structure</text>
+</svg>
+</body>
+</html>
