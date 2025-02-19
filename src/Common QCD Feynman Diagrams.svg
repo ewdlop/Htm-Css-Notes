@@ -1,0 +1,88 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="800" height="600" fill="#ffffff"/>
+    
+    <!-- Title -->
+    <text x="400" y="40" text-anchor="middle" font-size="24" font-weight="bold">Common QCD Feynman Diagrams</text>
+    
+    <!-- Diagram 1: Quark-Quark Scattering -->
+    <g transform="translate(100,150)">
+        <text x="100" y="-20" text-anchor="middle" font-size="16">a) Quark-Quark Scattering</text>
+        
+        <!-- Quarks -->
+        <line x1="0" y1="0" x2="100" y2="50" stroke="#000" stroke-width="2"/>
+        <line x1="0" y1="100" x2="100" y2="50" stroke="#000" stroke-width="2"/>
+        <line x1="100" y1="50" x2="200" y2="0" stroke="#000" stroke-width="2"/>
+        <line x1="100" y1="50" x2="200" y2="100" stroke="#000" stroke-width="2"/>
+        
+        <!-- Gluon -->
+        <path d="M100,50 Q120,60 140,50 Q160,40 180,50" fill="none" stroke="#000" stroke-width="2"/>
+        
+        <!-- Labels -->
+        <text x="-10" y="5" text-anchor="end" font-style="italic">q</text>
+        <text x="-10" y="105" text-anchor="end" font-style="italic">q</text>
+        <text x="210" y="5" text-anchor="start" font-style="italic">q</text>
+        <text x="210" y="105" text-anchor="start" font-style="italic">q</text>
+    </g>
+    
+    <!-- Diagram 2: Gluon Emission -->
+    <g transform="translate(400,150)">
+        <text x="100" y="-20" text-anchor="middle" font-size="16">b) Gluon Emission</text>
+        
+        <!-- Quark line -->
+        <line x1="0" y1="50" x2="200" y2="50" stroke="#000" stroke-width="2"/>
+        
+        <!-- Gluon -->
+        <path d="M100,50 Q120,30 140,20 Q160,10 180,0" fill="none" stroke="#000" stroke-width="2"/>
+        
+        <!-- Labels -->
+        <text x="-10" y="55" text-anchor="end" font-style="italic">q</text>
+        <text x="210" y="55" text-anchor="start" font-style="italic">q</text>
+        <text x="180" y="0" text-anchor="start" font-style="italic">g</text>
+    </g>
+    
+    <!-- Diagram 3: Quark-Antiquark Annihilation -->
+    <g transform="translate(100,350)">
+        <text x="100" y="-20" text-anchor="middle" font-size="16">c) Quark-Antiquark Annihilation</text>
+        
+        <!-- Quarks -->
+        <line x1="0" y1="0" x2="100" y2="50" stroke="#000" stroke-width="2"/>
+        <line x1="0" y1="100" x2="100" y2="50" stroke="#000" stroke-width="2"/>
+        
+        <!-- Gluon -->
+        <path d="M100,50 L200,50" stroke="#000" stroke-width="2"/>
+        
+        <!-- Labels -->
+        <text x="-10" y="5" text-anchor="end" font-style="italic">q</text>
+        <text x="-10" y="105" text-anchor="end" font-style="italic">q̄</text>
+        <text x="210" y="55" text-anchor="start" font-style="italic">g</text>
+    </g>
+    
+    <!-- Diagram 4: Gluon-Gluon Interaction -->
+    <g transform="translate(400,350)">
+        <text x="100" y="-20" text-anchor="middle" font-size="16">d) Gluon-Gluon Interaction</text>
+        
+        <!-- Gluons -->
+        <path d="M0,0 Q50,25 100,50" fill="none" stroke="#000" stroke-width="2"/>
+        <path d="M0,100 Q50,75 100,50" fill="none" stroke="#000" stroke-width="2"/>
+        <path d="M100,50 Q150,25 200,0" fill="none" stroke="#000" stroke-width="2"/>
+        <path d="M100,50 Q150,75 200,100" fill="none" stroke="#000" stroke-width="2"/>
+        
+        <!-- Labels -->
+        <text x="-10" y="5" text-anchor="end" font-style="italic">g</text>
+        <text x="-10" y="105" text-anchor="end" font-style="italic">g</text>
+        <text x="210" y="5" text-anchor="start" font-style="italic">g</text>
+        <text x="210" y="105" text-anchor="start" font-style="italic">g</text>
+    </g>
+    
+    <!-- Legend -->
+    <g transform="translate(100,500)">
+        <rect x="0" y="0" width="600" height="80" fill="#f8f9fa" stroke="#000" stroke-width="1"/>
+        <text x="10" y="25" font-size="14" font-weight="bold">Legend:</text>
+        <line x1="10" y1="45" x2="60" y2="45" stroke="#000" stroke-width="2"/>
+        <text x="70" y="50" font-size="14">Quark/Antiquark line</text>
+        <path d="M200,45 Q220,35 240,45" fill="none" stroke="#000" stroke-width="2"/>
+        <text x="250" y="50" font-size="14">Gluon</text>
+        <text x="400" y="50" font-size="14">q: quark, q̄: antiquark, g: gluon</text>
+    </g>
+</svg>
