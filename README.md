@@ -3,7 +3,7 @@
 Created with CodeSandbox
 
 ## Overview
-This repository contains various HTML, CSS, and JavaScript files demonstrating different web development techniques.
+This repository contains various HTML and CSS files demonstrating different web development techniques.
 
 ![Test](public/cheatsheet.svg)
 
@@ -16,9 +16,6 @@ This repository contains various HTML, CSS, and JavaScript files demonstrating d
 
 ## CSS Examples
 - [Benchmarking Flexbox, Grid, and Animations](public/benchmark.css)
-
-## React Components
-- [Box Component](src/components/box.jsx)
 
 ## Html
 
