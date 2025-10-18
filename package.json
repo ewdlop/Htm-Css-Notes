@@ -7,12 +7,6 @@
     "css",
     "notes"
   ],
-  "dependencies": {
-  },
-  "devDependencies": {
-  },
-  "scripts": {
-  },
   "browserslist": [
     ">0.2%",
     "not dead",
